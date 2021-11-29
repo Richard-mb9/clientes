@@ -1,0 +1,38 @@
+service: testelambdanode
+
+frameworkVersion: '2'
+
+plugins:
+  - serverless-express
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: us-east-2
+
+
+functions:
+  customers:
+    name: customers
+    handler: dist/handler.handler
+    events:
+        - http: ANY /
+        - http: "ANY {proxy+}"
+          private: false
+    description: test-lambda
+    timeout: 10 # seconds
+    memorySize: 128 #mb
+    environment:
+      REGION: ${env:AWS_REGION}
+      DYNAMO_ENDPOINT: ${env:DYNAMO_ENDPOINT}
+      ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+      SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+
+
+
+

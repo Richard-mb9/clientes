@@ -1,0 +1,252 @@
+openapi: "3.0.0"
+info:
+  description: "API de cadastro de clientes"
+  version: "1.0"
+  title: "cadastro de clientes"
+  contact:
+    email: "richard_mbs@hotmail.com"
+servers:
+  - url: https://6waxq3w92e.execute-api.us-east-2.amazonaws.com/api
+    description: Ambiente producao
+  - url: http://localhost:8001
+    description: Ambiente local
+
+paths:
+  /customers:
+    get:
+      tags:
+        - "Clientes"
+      summary: "Lista informações de clientes"
+      parameters:
+        - in: query
+          name: "name"
+          description: "filtra pelo nome do cliente, retornara os clientes com o mesmo nome da consulta"
+          schema:
+            type: string
+          example: "João"
+        - in: query
+          name: "city"
+          description: "filtra pela cidade do cliente"
+          example: "Rio de Janeiro"
+          schema:
+            type: string
+        - in: query
+          name: "state"
+          description: "filtra pelo estado do cliente"
+          example: "Rio de Janeiro"
+          schema:
+            type: string
+        - in: query
+          name: "street"
+          description: "filtra pela rua do cliente"
+          example: "rua nossa senhora de copacabana"
+          schema:
+            type: string
+        - in: query
+          name: "email"
+          description: "filtra pelo email do cliente"
+          example: "João@gmail.com"
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Listagem realizada com sucesso"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  items:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/customer"
+        400:
+          description: "foi enviado algum filtro icorreto"
+    post:
+      tags:
+        - "Clientes"
+      summary: "cria um novo cliente"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/customerCreate"
+      responses:
+        200:
+          description: "Cliente criado com sucesso"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: "id do cliente criado"
+                    example: "0996c200-fd8c-4d7b-b06a-e4efc7171ea5"
+        400:
+          description: "foi enviado algum campo incorreto, ou faltou enviar algum campo"
+                
+        
+  /customers/{id}:
+    get:
+      tags:
+        - "Clientes"
+      summary: "efetua a busca de um cliente especifico pelo id"
+      parameters:
+        - in: path
+          name: id
+          description: "faz um filtro de um cliente pelo id"
+          example: "0996c200-fd8c-4d7b-b06a-e4efc7171ea5"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Cliente obtido com sucesso, caso não encontre nenhum cliente com o id informado, ira retornar um objeto vazio"
+        400:
+          description: "o id informado esta em um formato incorreto"
+    put:
+      tags:
+        - "Clientes"
+      summary: "atualiza um cliente especifico pelo id"
+      parameters:
+        - in: path
+          name: id
+          description: "ira atualizar o cliente com o id enviado"
+          example: "0996c200-fd8c-4d7b-b06a-e4efc7171ea5"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/customerUpdate"
+      responses:
+        200:
+          description: "Cliente atualizado com sucesso"
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: "#/components/schemas/customerUpdate"
+        400:
+          description: "Foi enviado um id com um formato invalido, ou algum parametro incorreto no body para atualização"
+    delete:
+      tags:
+        - "Clientes"
+      summary: "exlui um cliente especifico pelo id"
+      parameters:
+        - in: path
+          name: id
+          description: "ira deletar o cliente com o id enviado"
+          example: "0996c200-fd8c-4d7b-b06a-e4efc7171ea5"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Cliente excluido com sucesso"
+        400: 
+          description: "foi enviado um id com um formato incorreto"
+      
+        
+      
+          
+                        
+components:
+  schemas:
+    customer:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "0996c200-fd8c-4d7b-b06a-e4efc7171ea5"
+          description: "uma string no formato uuidv4"
+        name:
+          type: string
+          example: "Jão"
+          description: "o nome do cliente"
+        age:
+          type: number
+          example: 20
+          description: "idade do cliente"
+        city:
+          type: string
+          example: "Rio de Janeiro"
+          description: "Cidade do cliente"
+        state:
+          type: string
+          example: "Rio de Janeiro"
+          description: "O estado ou provincia do cliente"
+        street:
+          type: string
+          example: "Rua nossa senhora de copacabana"
+          description: "logradouro do cliente"
+        email:
+          type: string
+          example: "joão@gmail.com"
+          description: "email do cliente"
+    customerUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Jão"
+          description: "o nome do cliente"
+        age:
+          type: number
+          example: 20
+          description: "idade do cliente"
+        city:
+          type: string
+          example: "Rio de Janeiro"
+          description: "Cidade do cliente"
+        state:
+          type: string
+          example: "Rio de Janeiro"
+          description: "O estado ou provincia do cliente"
+        street:
+          type: string
+          example: "Rua nossa senhora de copacabana"
+          description: "logradouro do cliente"
+        email:
+          type: string
+          example: "joão@gmail.com"
+          description: "email do cliente"
+    customerCreate:
+      type: object
+      required:
+        - "name"
+        - "age"
+        - "city"
+        - "state"
+        - "street"
+        - "email"
+      properties:
+        name:
+          type: string
+          example: "Jão"
+          description: "o nome do cliente"
+        age:
+          type: number
+          example: 20
+          description: "idade do cliente"
+        city:
+          type: string
+          example: "Rio de Janeiro"
+          description: "Cidade do cliente"
+        state:
+          type: string
+          example: "Rio de Janeiro"
+          description: "O estado ou provincia do cliente"
+        street:
+          type: string
+          example: "Rua nossa senhora de copacabana"
+          description: "logradouro do cliente"
+        email:
+          type: string
+          example: "joão@gmail.com"
+          description: "email do cliente"

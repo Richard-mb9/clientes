@@ -6,7 +6,7 @@ info:
   contact:
     email: "richard_mbs@hotmail.com"
 servers:
-  - url: https://6waxq3w92e.execute-api.us-east-2.amazonaws.com/api
+  - url: https://ex4q59vbfe.execute-api.us-east-2.amazonaws.com/dev
     description: Ambiente producao
   - url: http://localhost:8001
     description: Ambiente local
